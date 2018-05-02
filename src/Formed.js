@@ -1,8 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import ReactDOM from 'react-dom'
 
-const onObjEntries = chain => callback => o =>
-  Object.entries(o)[chain](callback)
+const onObjEntries = chain => callback => o => Object.entries(o)[chain](callback)
 
 const mapObj = o => fn => onObjEntries('map')(keyVal => fn(...keyVal))(o)
 
@@ -27,9 +26,7 @@ export default class Formed extends Component {
     }))
 
   injectErrors = errors =>
-    Object.entries(errors).forEach(([error, message]) =>
-      this.setError(error, message)
-    )
+    Object.entries(errors).forEach(([error, message]) => this.setError(error, message))
 
   validateField = (fieldName, value) => {
     let isValidOrNot = true
@@ -48,16 +45,14 @@ export default class Formed extends Component {
   validateAllFields = () => {
     let isValidOrNot = true
     Object.entries(this.props.fields).forEach(([fieldName]) => {
-      if (!this.validateField(fieldName, this.state.values[fieldName]))
-        isValidOrNot = false
+      if (!this.validateField(fieldName, this.state.values[fieldName])) isValidOrNot = false
     })
     return isValidOrNot
   }
 
   onSubmit = e => {
     e.preventDefault()
-    if (this.validateAllFields())
-      this.props.submit(this.state.values, this.injectErrors)
+    if (this.validateAllFields()) this.props.submit(this.state.values, this.injectErrors)
   }
   onBlur = ({ target: { name } }) => {
     if (!this.state.blurredFields.includes(name)) {
@@ -68,9 +63,7 @@ export default class Formed extends Component {
   }
 
   render() {
-    const isSubmitDisabled = Object.entries(this.state.errors).some(
-      ([key, val]) => val.length > 0
-    )
+    const isSubmitEnabled = Object.entries(this.state.errors).some(([key, val]) => !val.length > 0)
     return (
       <form onSubmit={this.onSubmit}>
         {mapObj(this.props.fields)((fieldName, field) => (
@@ -89,7 +82,7 @@ export default class Formed extends Component {
               )}
           </Fragment>
         ))}
-        <button type="submit" disabled={isSubmitDisabled}>
+        <button type="submit" disabled={isSubmitEnabled}>
           Submit
         </button>
       </form>
