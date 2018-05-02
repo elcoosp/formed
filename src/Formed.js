@@ -6,14 +6,16 @@ const onObjEntries = chain => callback => o => Object.entries(o)[chain](callback
 const mapObj = o => fn => onObjEntries('map')(keyVal => fn(...keyVal))(o)
 
 export default class Formed extends Component {
-  state = this.props.fields.reduce((acc, { name }) => {
-    return {
-      blurredFields: [],
-      ...acc,
-      values: { ...acc.values, [name]: '' },
-      errors: { ...acc.errors, [name]: '' }
-    }
-  }, {})
+  state = Object.assign(
+    { blurredFields: [] },
+    this.props.fields.reduce(
+      (acc, { name }) => ({
+        values: { ...acc.values, [name]: '' },
+        errors: { ...acc.errors, [name]: '' }
+      }),
+      {}
+    )
+  )
 
   onValueChange = ({ target: { value, name } }) => {
     this.validateField(name, value)
