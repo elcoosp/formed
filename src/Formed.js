@@ -58,6 +58,7 @@ export default class Formed extends Component {
       Object.keys(this.state.values).forEach(this.addBlurredField)
     }
   }
+  isSubmitDisabled = () => Object.entries(this.state.errors).some(([key, val]) => val.length > 0)
 
   addBlurredField = name =>
     this.setState(({ blurredFields }) => ({
@@ -69,7 +70,6 @@ export default class Formed extends Component {
   }
 
   render() {
-    const isSubmitDisabled = Object.entries(this.state.errors).some(([key, val]) => val.length > 0)
     return (
       <form onSubmit={this.onSubmit}>
         {this.props.fields.map(({ name, type = 'text' }) => (
@@ -86,7 +86,7 @@ export default class Formed extends Component {
               this.state.blurredFields.includes(name) && <span>{this.state.errors[name]}</span>}
           </Fragment>
         ))}
-        <button type="submit" disabled={isSubmitDisabled}>
+        <button type="submit" disabled={this.isSubmitDisabled()}>
           Submit
         </button>
       </form>
