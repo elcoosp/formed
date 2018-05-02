@@ -53,14 +53,19 @@ export default class Formed extends Component {
   onSubmit = e => {
     e.preventDefault()
     if (this.validateAllFields()) this.props.submit(this.state.values, this.injectErrors)
+    // Reveal errors if none were shown
+    else if (this.state.blurredFields.length === 0) {
+      Object.keys(this.state.values).forEach(this.addBlurredField)
+    }
   }
 
+  addBlurredField = name =>
+    this.setState(({ blurredFields }) => ({
+      blurredFields: [...blurredFields, name]
+    }))
+
   onBlur = ({ target: { name } }) => {
-    if (!this.state.blurredFields.includes(name)) {
-      this.setState(({ blurredFields }) => ({
-        blurredFields: [...blurredFields, name]
-      }))
-    }
+    if (!this.state.blurredFields.includes(name)) this.addBlurredField(name)
   }
 
   render() {
