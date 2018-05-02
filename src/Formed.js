@@ -28,26 +28,22 @@ export default class Formed extends Component {
   injectErrors = errors =>
     Object.entries(errors).forEach(([fieldName, message]) => this.setError(fieldName, message))
 
-  validateField = (fieldName, value) => {
-    let isValidOrNot = true
+  validateField = (fieldName, inputValue) => {
     const { validators } = this.props.fields.filter(({ name }) => name === fieldName)[0]
-
-    if (validators.some(([validate]) => !validate(value))) {
-      isValidOrNot = false
-      validators.forEach(([validatorFunc, message]) => {
-        if (!validatorFunc(value)) this.setError(fieldName, message)
-      })
-    } else this.setError(fieldName, '')
-
-    return isValidOrNot
+    for (const [validatorFunc, message] of validators) {
+      if (!validatorFunc(inputValue)) {
+        this.setError(fieldName, message)
+        return false
+      } else this.setError(fieldName, '')
+    }
+    return true
   }
 
   validateAllFields = () => {
-    let isValidOrNot = true
     this.props.fields.forEach(({ name }) => {
-      if (!this.validateField(name, this.state.values[name])) isValidOrNot = false
+      if (!this.validateField(name, this.state.values[name])) return false
     })
-    return isValidOrNot
+    return true
   }
 
   onSubmit = e => {
@@ -58,6 +54,7 @@ export default class Formed extends Component {
       Object.keys(this.state.values).forEach(this.addBlurredField)
     }
   }
+
   isSubmitDisabled = () => Object.entries(this.state.errors).some(([key, val]) => val.length > 0)
 
   addBlurredField = name =>
