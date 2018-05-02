@@ -11,19 +11,19 @@ class App extends Component {
     return (
       <div>
         <Formed
-          fields={{
-            pseudo: {
+          fields={[
+            {
+              name: 'pseudo',
               validators: [
                 [x => x.length >= 3, 'Pseudo need to be more than 3'],
                 [x => x.length <= 5, 'Pseudo need to be  less 5']
               ]
             },
-            password: {
-              validators: [
-                [x => x.length >= 3, 'Password need to be more than 3']
-              ]
+            {
+              name: 'password',
+              validators: [[x => x.length >= 3, 'Password need to be more than 3']]
             }
-          }}
+          ]}
           submit={this.onSubmit}
         />
       </div>

@@ -6,12 +6,12 @@ const onObjEntries = chain => callback => o => Object.entries(o)[chain](callback
 const mapObj = o => fn => onObjEntries('map')(keyVal => fn(...keyVal))(o)
 
 export default class Formed extends Component {
-  state = Object.entries(this.props.fields).reduce((acc, [key]) => {
+  state = this.props.fields.reduce((acc, { name }) => {
     return {
       blurredFields: [],
       ...acc,
-      values: { ...acc.values, [key]: '' },
-      errors: { ...acc.errors, [key]: '' }
+      values: { ...acc.values, [name]: '' },
+      errors: { ...acc.errors, [name]: '' }
     }
   }, {})
 
@@ -26,11 +26,11 @@ export default class Formed extends Component {
     }))
 
   injectErrors = errors =>
-    Object.entries(errors).forEach(([error, message]) => this.setError(error, message))
+    Object.entries(errors).forEach(([fieldName, message]) => this.setError(fieldName, message))
 
   validateField = (fieldName, value) => {
     let isValidOrNot = true
-    const { validators } = this.props.fields[fieldName]
+    const { validators } = this.props.fields.filter(({ name }) => name === fieldName)[0]
 
     if (validators.some(([validate]) => !validate(value))) {
       isValidOrNot = false
@@ -44,8 +44,8 @@ export default class Formed extends Component {
 
   validateAllFields = () => {
     let isValidOrNot = true
-    Object.entries(this.props.fields).forEach(([fieldName]) => {
-      if (!this.validateField(fieldName, this.state.values[fieldName])) isValidOrNot = false
+    this.props.fields.forEach(({ name }) => {
+      if (!this.validateField(name, this.state.values[name])) isValidOrNot = false
     })
     return isValidOrNot
   }
@@ -54,6 +54,7 @@ export default class Formed extends Component {
     e.preventDefault()
     if (this.validateAllFields()) this.props.submit(this.state.values, this.injectErrors)
   }
+
   onBlur = ({ target: { name } }) => {
     if (!this.state.blurredFields.includes(name)) {
       this.setState(({ blurredFields }) => ({
@@ -63,26 +64,24 @@ export default class Formed extends Component {
   }
 
   render() {
-    const isSubmitEnabled = Object.entries(this.state.errors).some(([key, val]) => !val.length > 0)
+    const isSubmitDisabled = Object.entries(this.state.errors).some(([key, val]) => val.length > 0)
     return (
       <form onSubmit={this.onSubmit}>
-        {mapObj(this.props.fields)((fieldName, field) => (
-          <Fragment key={fieldName}>
-            <label htmlFor={fieldName}>{fieldName}</label>
+        {this.props.fields.map(({ name, type = 'text' }) => (
+          <Fragment key={name}>
+            <label htmlFor={name}>{name}</label>
             <input
               onBlur={this.onBlur}
-              type={field.type || 'text'}
+              type={type}
               onChange={this.onValueChange}
-              value={this.state.values[fieldName]}
-              name={fieldName}
+              value={this.state.values[name]}
+              name={name}
             />
-            {this.state.errors[fieldName] &&
-              this.state.blurredFields.includes(fieldName) && (
-                <span>{this.state.errors[fieldName]}</span>
-              )}
+            {this.state.errors[name] &&
+              this.state.blurredFields.includes(name) && <span>{this.state.errors[name]}</span>}
           </Fragment>
         ))}
-        <button type="submit" disabled={isSubmitEnabled}>
+        <button type="submit" disabled={isSubmitDisabled}>
           Submit
         </button>
       </form>
