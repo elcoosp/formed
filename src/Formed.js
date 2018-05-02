@@ -68,6 +68,9 @@ export default class Formed extends Component {
   }
 
   render() {
+    const isSubmitDisabled = Object.entries(this.state.errors).some(
+      ([key, val]) => val.length > 0
+    )
     return (
       <form onSubmit={this.onSubmit}>
         {mapObj(this.props.fields)((fieldName, field) => (
@@ -86,7 +89,9 @@ export default class Formed extends Component {
               )}
           </Fragment>
         ))}
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={isSubmitDisabled}>
+          Submit
+        </button>
       </form>
     )
   }
