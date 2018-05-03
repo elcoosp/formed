@@ -15,13 +15,15 @@ class App extends Component {
             {
               name: 'pseudo',
               validators: [
-                [x => x.length >= 3, 'Pseudo need to be more than 3'],
-                [x => x.length <= 5, 'Pseudo need to be  less 5']
+                [({ pseudo }) => pseudo.length >= 3, 'Pseudo need to be more than 3'],
+                [({ pseudo }) => pseudo.length <= 5, 'Pseudo need to be  less 5']
               ]
             },
             {
               name: 'password',
-              validators: [[x => x.length >= 3, 'Password need to be more than 3']]
+              validators: [
+                [({ password }) => password.length >= 3, 'Password need to be more than 3']
+              ]
             }
           ]}
           submit={this.onSubmit}

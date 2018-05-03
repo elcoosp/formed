@@ -32,8 +32,10 @@ export default class Formed extends Component {
 
   validateField = (fieldName, inputValue) => {
     const { validators } = this.props.fields.filter(({ name }) => name === fieldName)[0]
+    //Pass the wole state values and the last inputValue to the validator function
+    const stateValues = { ...this.state.values, [fieldName]: inputValue }
     for (const [validatorFunc, message] of validators) {
-      if (!validatorFunc(inputValue)) {
+      if (!validatorFunc(stateValues)) {
         this.setError(fieldName, message)
         return false
       } else this.setError(fieldName, '')
