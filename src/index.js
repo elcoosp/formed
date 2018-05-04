@@ -1,37 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import ReactDOM from 'react-dom'
-import Formed from './Formed'
-
-const pipe = (initAcc, ...fns) => fns.reduce((acc, f) => f(acc), initAcc)
-const toNameKeyObj = arrayOfObjWithNameKey =>
-  arrayOfObjWithNameKey.reduce((acc, obj) => {
-    acc[obj.name] = obj.name
-    return acc
-  }, {})
-
-const mapFieldsNameToDefs = fieldsDefs => fieldsNameArr =>
-  fieldsNameArr.map(name => fieldsDefs.find(fieldObj => fieldObj.name === name))
-
-const formalize = fieldsDefinitions => (
-  components = {
-    Input: p => <input {...p} />,
-    Form: p => <form {...p} />,
-    Label: p => <label {...p} />,
-    ErrorMessage: p => <span {...p} />,
-    Button: p => <button {...p}>Submit</button>
-  }
-) => ({ pickFields, ...props }) => (
-  <Formed
-    {...props}
-    components={components}
-    fields={pipe(
-      fieldsDefinitions,
-      toNameKeyObj,
-      pickFields,
-      mapFieldsNameToDefs(fieldsDefinitions)
-    )}
-  />
-)
+import formalize from './formalize'
 
 const Formalized = formalize([
   {
@@ -47,7 +16,7 @@ const Formalized = formalize([
   }
 ])()
 
-class App extends Component {
+class CustomForm extends Component {
   onSubmit = (values, injectErrors) =>
     setTimeout(() => {
       injectErrors({ password: 'wrong' })
@@ -65,4 +34,4 @@ class App extends Component {
   }
 }
 
-ReactDOM.render(<App />, document.querySelector('#app'))
+ReactDOM.render(<CustomForm />, document.querySelector('#app'))
