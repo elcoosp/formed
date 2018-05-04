@@ -1,10 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import ReactDOM from 'react-dom'
 
-const onObjEntries = chain => callback => o => Object.entries(o)[chain](callback)
-
-const mapObj = o => fn => onObjEntries('map')(keyVal => fn(...keyVal))(o)
-
 export default class Formed extends Component {
   state = Object.assign(
     { blurredFields: [] },
