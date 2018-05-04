@@ -12,9 +12,18 @@ const toNameKeyObj = arrayOfObjWithNameKey =>
 const mapFieldsNameToDefs = fieldsDefs => fieldsNameArr =>
   fieldsNameArr.map(name => fieldsDefs.find(fieldObj => fieldObj.name === name))
 
-const formalize = fieldsDefinitions => ({ pickFields, ...props }) => (
+const formalize = fieldsDefinitions => (
+  components = {
+    Input: p => <input {...p} />,
+    Form: p => <form {...p} />,
+    Label: p => <label {...p} />,
+    ErrorMessage: p => <span {...p} />,
+    Button: p => <button {...p}>Submit</button>
+  }
+) => ({ pickFields, ...props }) => (
   <Formed
     {...props}
+    components={components}
     fields={pipe(
       fieldsDefinitions,
       toNameKeyObj,
@@ -26,28 +35,31 @@ const formalize = fieldsDefinitions => ({ pickFields, ...props }) => (
 
 const Formalized = formalize([
   {
-    name: 'pseudo',
+    name: 'email',
     validators: [
-      [({ pseudo }) => pseudo.length >= 3, 'Pseudo need to be more than 3'],
-      [({ pseudo }) => pseudo.length <= 5, 'Pseudo need to be less than 5']
+      [({ email }) => email.length >= 3, 'email need to be more than 3'],
+      [({ email }) => email.length <= 5, 'email need to be less than 5']
     ]
   },
   {
     name: 'password',
     validators: [[({ password }) => password.length >= 3, 'Password need to be more than 3']]
   }
-])
+])()
 
 class App extends Component {
   onSubmit = (values, injectErrors) =>
     setTimeout(() => {
-      injectErrors({ pseudo: 'wrong' })
+      injectErrors({ password: 'wrong' })
     }, 2000)
 
   render() {
     return (
       <div>
-        <Formalized pickFields={({ pseudo }) => [pseudo]} submit={this.onSubmit} />
+        <Formalized
+          pickFields={({ email, password }) => [password, email]}
+          submit={this.onSubmit}
+        />
       </div>
     )
   }
