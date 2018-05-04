@@ -71,26 +71,26 @@ export default class Formed extends Component {
   }
 
   render() {
+    const { Input, Label, Form, ErrorMessage, Button } = this.props.components
+    const { errors, blurredFields } = this.state
     return (
-      <form onSubmit={this.onSubmit}>
+      <Form onSubmit={this.onSubmit}>
         {this.props.fields.map(({ name, type = 'text' }) => (
           <Fragment key={name}>
-            <label htmlFor={name}>{name}</label>
-            <input
+            <Label htmlFor={name}>{name}</Label>
+            <Input
               onBlur={this.onBlur}
               type={type}
               onChange={this.onValueChange}
               value={this.state.values[name]}
               name={name}
             />
-            {this.state.errors[name] &&
-              this.state.blurredFields.includes(name) && <span>{this.state.errors[name]}</span>}
+            {errors[name] &&
+              blurredFields.includes(name) && <ErrorMessage>{errors[name]}</ErrorMessage>}
           </Fragment>
         ))}
-        <button type="submit" disabled={this.isSubmitDisabled()}>
-          Submit
-        </button>
-      </form>
+        <Button type="submit" disabled={this.isSubmitDisabled()} />
+      </Form>
     )
   }
 }
