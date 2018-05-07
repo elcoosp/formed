@@ -23,15 +23,16 @@ export default class Formed extends Component {
       errors: { ...errors, [fieldName]: message }
     }))
 
+  // TODO: Check if not anti pattern to pass thiss function as a callback
   injectErrors = errors =>
     Object.entries(errors).forEach(([fieldName, message]) => this.setError(fieldName, message))
 
   validateField = (fieldName, inputValue) => {
     const { validators } = this.props.fields.filter(({ name }) => name === fieldName)[0]
-    //Pass the wole state values and the last inputValue to the validator function
-    const stateValues = { ...this.state.values, [fieldName]: inputValue }
-    for (const [validatorFunc, message] of validators) {
-      if (!validatorFunc(stateValues)) {
+    for (const getValidationMessage of validators) {
+      //Pass the wole state values and the last inputValue to the validator function
+      const message = getValidationMessage({ ...this.state.values, [fieldName]: inputValue })
+      if (message) {
         this.setError(fieldName, message)
         return false
       } else this.setError(fieldName, '')
