@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
+
 export default class Formed extends Component {
   static propTypes = {
     submit: PropTypes.func.isRequired,
