@@ -1,7 +1,18 @@
 import React, { Component, Fragment } from 'react'
 import ReactDOM from 'react-dom'
-
+import PropTypes from 'prop-types'
 export default class Formed extends Component {
+  static propTypes = {
+    submit: PropTypes.func.isRequired,
+    fields: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        type: PropTypes.string,
+        validators: PropTypes.arrayOf(PropTypes.func).isRequired
+      })
+    ).isRequired
+  }
+
   state = Object.assign(
     { blurredFields: [] },
     this.props.fields.reduce(
@@ -48,7 +59,7 @@ export default class Formed extends Component {
     return true
   }
 
-  onSubmit = e => {
+  handleSubmit = e => {
     e.preventDefault()
     if (this.validateAllFields()) this.props.submit(this.state.values)
     // Reveal errors if none were shown
@@ -73,7 +84,7 @@ export default class Formed extends Component {
     const { Input, Label, Form, ErrorMessage, Button } = this.props.components
     const { errors, blurredFields } = this.state
     return (
-      <Form onSubmit={this.onSubmit}>
+      <Form onSubmit={this.handleSubmit}>
         {this.props.fields.map(({ name, type = 'text' }) => (
           <Fragment key={name}>
             <Label htmlFor={name}>{name}</Label>
