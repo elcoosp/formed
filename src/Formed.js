@@ -4,6 +4,13 @@ import PropTypes from 'prop-types'
 export default class Formed extends Component {
   static propTypes = {
     submit: PropTypes.func.isRequired,
+    components: PropTypes.shape({
+      Input: PropTypes.func.isRequired,
+      Form: PropTypes.func.isRequired,
+      Label: PropTypes.func.isRequired,
+      ErrorMessage: PropTypes.func.isRequired,
+      Button: PropTypes.func.isRequired
+    }).isRequired,
     fields: PropTypes.arrayOf(
       PropTypes.shape({
         name: PropTypes.string.isRequired,
