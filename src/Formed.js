@@ -90,7 +90,7 @@ export default class Formed extends Component {
 
   render() {
     const { Input, Label, Form, ErrorMessage, Button } = this.props.components
-    const { errors, blurredFields } = this.state
+    const { errors, blurredFields, values } = this.state
     return (
       <Form onSubmit={this.handleSubmit}>
         {this.props.fields.map(({ name, type = 'text' }) => (
@@ -100,7 +100,7 @@ export default class Formed extends Component {
               onBlur={this.onBlur}
               type={type}
               onChange={this.onValueChange}
-              value={this.state.values[name]}
+              value={values[name]}
               name={name}
             />
             {errors[name] &&
