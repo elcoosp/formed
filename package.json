@@ -12,7 +12,7 @@
   "dependencies": {
     "prop-types": "^15.6.1",
     "react": "^16.3.2",
-    "react-dom": "^16.3.2"
+    "react-dom": "^16.3.3"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
